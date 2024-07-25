@@ -111,7 +111,6 @@ const initLangSelector = () => {
         },
     });
 
-    // Set language selector based on URL parameter
     const l = new URLSearchParams(window.location.search).get('l');
     select.set(l ? decodeURIComponent(l) : shorten('Plain Text'));
 };
@@ -185,17 +184,6 @@ const CustomErrorModal = (err) => {
     }, 10);
   
 };
-/**
- * Hides the "error" modal.
- */
-const hideErrorModal = () => {
-    const modal = document.getElementById('error-modal');
-    modal.style.opacity = '0';
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 300);
-};
-
 
 /**
  * Generates a unique token for identifying the paste.
