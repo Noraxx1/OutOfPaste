@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>OutOfPaste</title>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap-grid.min.css,npm/slim-select@1.27.1/dist/slimselect.min.css,npm/codemirror@5.65.5/lib/codemirror.min.css,npm/codemirror@5.65.5/addon/scroll/simplescrollbars.css,npm/codemirror@5.65.5/theme/dracula.min.css,npm/microtip@0.2.2/microtip.min.css">
+
+    <!-- Favicon and meta tags -->
+    <link href="/assets/favicon.ico" rel="icon" type="image/x-icon">
+    <link rel="canonical" href="https://OutOfPaste.boris.sh/">
+    <meta name="description" content="OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.">
+    <meta property="og:title" content="OutOfPaste - Database-powered paste service">
+    <meta property="og:description" content="OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.">
+    <meta property="og:image" content="https://cdn.jsdelivr.net/gh/bokub/OutOfPaste@images/logo.png">
+    <meta property="og:url" content="https://OutOfPaste.boris.sh/">
+    <meta property="og:type" content="website">
+</head>
+<body class="m-0">
+
+    <!-- Read-only mode script -->
+    <script>
+        const readOnly = window.location !== window.parent.location || new URLSearchParams(window.location.search).has('readonly');
+        if (readOnly) {
+            document.body.classList.add('readonly');
+        }
+    </script>
+
+    <!-- Copy section -->
+    <section id="copy" class="container-fluid hidden shadow-bottom hide-readonly">
+        <div class="row my-1">
+            <div class="col my-1">
+                <input type="text" value="copy me" id="copy-link" class="px-2" onclick="this.select()">
+            </div>
+            <div class="col-auto my-1">
+                <button class="clipboard py-1 px-2 mx-1" id="copy-btn" data-clipboard-target="#copy-link">Copy</button>
+                <button class="py-1 px-2 mx-1" onclick="hideCopyBar(false)">Cancel</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Controls section -->
+    <section id="controls" class="container-fluid shadow-bottom hide-readonly">
+        <div class="row align-items-center justify-content-end my-1">
+            <div class="col-auto mb-1">
+                <h1 class="my-0"><span>[</span> OutOfPaste <span>]</span></h1>
+            </div>
+            <div class="col-auto">
+                <a href="javascript:void(0)" class="mx-3" aria-label="Click to know more about OutOfPaste" data-microtip-position="bottom" role="tooltip" onclick="showInfo()">About</a>
+                <a href="https://github.com/bokub/OutOfPaste" rel="noopener" target="_blank" class="mx-3">Source</a>
+            </div>
+            <div class="col"></div>
+            <div class="col-auto my-1">
+                <select id="language"></select>
+            </div>
+            <div class="col-auto">
+                <button onclick="enableLineWrapping()" type="button" id="enable-line-wrapping" aria-label="Enable line wrapping" data-microtip-position="bottom" role="tooltip">
+                    <span class="icon-notes"></span>
+                </button>
+                <button onclick="disableLineWrapping()" type="button" id="disable-line-wrapping" aria-label="Disable line wrapping" data-microtip-position="bottom" role="tooltip" class="hidden">
+                    <span class="icon-wrap-text"></span>
+                </button>
+            </div>
+            <div class="col-auto">
+                <button class="py-1 px-2 mx-0 my-1" onclick="generateLink('url')">Generate link</button>
+                <button class="py-1 px-2 mx-1 my-1" onclick="generateLink('markdown')">Generate markdown</button>
+                <button class="py-1 px-2 mx-0 my-1" onclick="generateLink('iframe')">Embed</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress and Editor sections -->
+    <div id="progress"></div>
+    <div id="editor"></div>
+
+    <!-- Footer section -->
+    <footer id="footer" class="shadow-top container-fluid">
+        <div class="row my-1">
+            <div class="col mono hide-readonly" id="stats">Length: 0 | Lines: 1</div>
+            <div class="col mono show-readonly">Powered by OutOfPaste</div>
+            <div class="col-auto mono show-readonly">
+                <a href="javascript:void(0)" onclick="openInNewTab()">
+                    <span class="icon-edit"></span>
+                    Edit
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal sections -->
+    <section id="modals">
+        <!-- About modal -->
+        <div id="about-modal" class="modal" hidden>
+            <div tabindex="-1" class="modal-overlay">
+                <div class="modal-content shadow-bottom p-3 m-3">
+                    <div class="modal-close" onclick="hideAboutModal()"><span class="icon-close"></span></div>
+                    <h2>About OutOfPaste</h2>
+                    <p>OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Error modal -->
+        <div id="error-modal" class="modal" hidden>
+            <div tabindex="-1" class="modal-overlay">
+                <div class="modal-content shadow-bottom p-3 m-3">
+                    <a href="javascript:void(0);" class="modal-close" onclick="this.href = window.location.protocol + '//' + window.location.host;">
+                        <span class="icon-close"></span>
+                    </a>
+                    <h2>Error</h2>
+                    <p>Oops! It seems that the paste you are trying to open doesn't exist!<br><br>
+                    Make sure the URL is correct and that your paste has not been auto-deleted!</p>
+                </div>
+            </div>
+        </div>
+        <!-- Save error modal -->
+    <div id="save-error-modal" class="modal" hidden>
+        <div tabindex="-1" class="modal-overlay">
+            <div class="modal-content shadow-bottom p-3 m-3">
+                <a href="javascript:void(0);" class="modal-close" onclick="this.href = window.location.protocol + '//' + window.location.host;">
+                    <span class="icon-close"></span>
+                </a>
+                <h2>Error</h2>
+                <p id="error-message">"<!-- Placeholder for error content -->"<br><br></p>
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/combine/npm/lzma@2.3.2/src/lzma.min.js,npm/slim-select@1.27.1/dist/slimselect.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/micromodal@0.4.10/dist/micromodal.min.js,npm/codemirror@5.65.5,npm/codemirror@5.65.5/addon/mode/loadmode.min.js,npm/codemirror@5.65.5/addon/mode/overlay.min.js,npm/codemirror@5.65.5/addon/mode/multiplex.min.js,npm/codemirror@5.65.5/addon/mode/simple.min.js,npm/codemirror@5.65.5/addon/scroll/simplescrollbars.js,npm/codemirror@5.65.5/mode/meta.min.js"></script>
+    <script src="/client.js" defer></script>
+    
+    <!-- Inline script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var path = window.location.pathname;
+            if (path.includes('read')) {
+                var pathParts = path.split('/');
+                var token = pathParts[pathParts.length - 1];
+                if (token === "") {
+                    showError();
+                } else {
+                    fetch(`${window.location.origin}/content/${token}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.content) {
+                            initCodeEditor(true, data.content);
+                        } else {
+                            showError();
+                            console.log("error?");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError();
+                    });
+                }
+            } else {
+                initCodeEditor(false);
+            }
+        });
+    </script>
+    
+</body>
+</html>
