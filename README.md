@@ -13,7 +13,7 @@
 ```
 
 > [!NOTE]  
-> OutOfPaste started out as a fork of [NoPaste](<https://github.com/bokub/nopaste>).
+> OutOfPaste started out as a fork of [NoPaste](<https://github.com/bokub/nopaste>) but got heavily edited.
 
 ____
 
