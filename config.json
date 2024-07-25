@@ -1,0 +1,10 @@
+{
+    "port": "80",
+    "metod": "file",
+    "DataDirectory": "data",
+
+    "adress": "192.168.1.21",
+
+    "time" : "",
+    "maximumRequests": "5"
+}
