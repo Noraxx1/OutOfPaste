@@ -43,4 +43,3 @@ To start Out Of Paste, just run `make deploy`.
 # Configuring
 > [!NOTE]  
 > This section has not been written yet!
-```
