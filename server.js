@@ -70,14 +70,11 @@ app.get('/content/:token', (req, res) => {
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             if (err.code === 'ENOENT') {
-                // File not found
                 res.status(404).json({ error: 'File not found' });
             } else {
-                // Other errors
                 res.status(500).json({ error: 'Error reading file' });
             }
         } else {
-            // File read successfully
             res.json({ content: data });
         }
     });
