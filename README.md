@@ -31,6 +31,7 @@ Out Of Paste is a self-hosted alternative to traditional pastebin services. Unli
 > - Raw mode.
 > - Fork and edit pastes.
 > - Markdown.
+> - Mobile css fix.
 >   Are coming soon!
 
 # Hosting
