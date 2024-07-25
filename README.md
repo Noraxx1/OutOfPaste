@@ -1,4 +1,4 @@
-```
+```markdown
  ______     __  __     ______      ______     ______ 
 /\  __ \   /\ \/\ \   /\__  _\    /\  __ \   /\  ___\
 \ \ \/\ \  \ \ \_\ \  \/_/\ \/    \ \ \/\ \  \ \  __\
@@ -11,24 +11,36 @@
  \ \_\    \ \_\ \_\  \/\_____\    \ \_\  \ \_____\   
   \/_/     \/_/\/_/   \/_____/     \/_/   \/_____/
 ```
+
 > [!NOTE]  
-> OutOfPaste stared out as a fork of [NoPaste](<https://github.com/bokub/nopaste>)
+> OutOfPaste started out as a fork of [NoPaste](<https://github.com/bokub/nopaste>).
+
 ____
 
 # What is Out Of Paste?
-well Out Of Paste is a self-hostanle option for a pastebin like website,offering a modern web UI ready-to-go configuration and isntead more advanced configs for those who want extra.
+Out Of Paste is a self-hosted alternative to traditional pastebin services. Unlike NoPaste, which encodes pastes in the URL using base64, Out Of Paste saves content directly on the server. It features a modern web interface, an easy-to-configure setup, and advanced settings for those seeking greater customization.
+
 ## Features
-- ratelimit to prevent users from creating too much files.
-- modern ui (the ui is mostly based on the nopaste ui!)
+- Rate limit to prevent users from creating too many files.
+- Modern UI (the UI is mostly based on the NoPaste UI!)
 > [!NOTE]  
 > Features such as:
-> - Ratelimit configuration.
-> - Database support.
+> - Rate limit configuration.
+> - Database support(right now you can only save pastes in to text files).
 > - Encryption support.
+> - Raw mode.
+> - Fork and edit pastes.
+> - Markdown.
 >   Are coming soon!
 
-
-
+# Hosting
 > [!WARNING]  
-> It is not reccomended to use Out of Paste at this state since major improvements and features are coming.
+> It is not recommended to use Out Of Paste at this state since major improvements and features are coming.
 
+#### (First, make sure to have npm installed.)
+To start Out Of Paste, just run `make deploy`.
+
+# Configuring
+> [!NOTE]  
+> This section has not been written yet!
+```
