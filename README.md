@@ -13,26 +13,30 @@
 ```
 
 > [!NOTE]  
-> OutOfPaste started out as a fork of [NoPaste](<https://github.com/bokub/nopaste>) but got heavily edited.
+> Out Of Paste started out as a fork of [NoPaste](<https://github.com/bokub/nopaste>) but got heavily edited.
 
 ____
 
 # What is Out Of Paste?
-Out Of Paste is a self-hosted alternative to traditional pastebin services. Unlike NoPaste, which encodes pastes in the URL using base64, Out Of Paste saves content directly on the server. It features a modern web interface, an easy-to-configure setup, and advanced settings for those seeking greater customization.
+Out Of Paste is a self-hosted alternative to traditional pastebin services. Unlike NoPaste, which encodes pastes in the URL using base64, Out Of Paste stores content directly server-side. It features a modern web interface, an easy-to-configure setup, and advanced settings for those seeking greater customization.
 
 ## Features
 - Rate limit to prevent users from creating too many files.
 - Modern UI (the UI is mostly based on the NoPaste UI!)
+- Rate limit configuration.
+- Easy set-up and depoly.
+
 > [!NOTE]  
 > Features such as:
-> - Rate limit configuration.
-> - Database support(right now you can only save pastes in to text files).
-> - Encryption support.
-> - Raw mode.
-> - Fork and edit pastes.
-> - Markdown.
-> - Mobile css fix.
->   Are coming soon!
+> - Database support(right now you can only save pastes in to text files),
+> - Encryption supportx
+> - Raw mode,
+> - Fork and edit pastes,
+> - Markdown,
+> - Mobile css fix,
+> - Themes,
+> 
+>  Are coming soon!
 
 # Hosting
 > [!WARNING]  
@@ -47,7 +51,7 @@ To start Out Of Paste, just run `make deploy`.
 
 > [!NOTE]  
 > those configuration go inside `config.json`.
-> optional means that you can leave the variable empity but **doesnt mean you can delete it**
+> optional means that you can leave the variable empty but **doesn't mean you can delete it.**
 
 ### Required Configurations.
 - `port`: this is the port of where nopaste should listen on,i reccomend using port `80` as it is the default port listened by dns.
