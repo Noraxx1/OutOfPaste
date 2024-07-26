@@ -1,6 +1,6 @@
 {
     "HosterName": "",
-    "port": "80",
+    "port": "1212",
     "metod": "file",
     "DataDirectory": "data",
     "style": "dracula",
