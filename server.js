@@ -9,7 +9,7 @@ import LRU from 'lru-cache';
 
 const require = createRequire(import.meta.url);
 const config = require('./config.json');
-const { port, DataDirectory, adress } = config;
+const { port, DataDirectory, adress, windowMs, MaximumRequests, RatelimitMessage, fileCreationCacheMax, fileCreationCacheMaxAge, HosterName, MinChar } = config;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
@@ -18,16 +18,31 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000,
-    max: 5,
-    message: "Too many requests from this IP, please try again later."
+    windowMs: windowMs,
+    max: MaximumRequests,
+    message: RatelimitMessage,
 });
 app.use('/create-file', limiter); 
 
 const fileCreationCache = new LRU({
-    max: 100, 
-    maxAge: 24 * 60 * 60 * 1000 
+    max: fileCreationCacheMax, 
+    maxAge: fileCreationCacheMaxAge,
 });
+
+/**
+ * Route to send HosterName to the client
+ */
+app.get('/hoster-name', (req, res) => {
+    res.json({ HosterName });
+});
+
+/**
+ * Route to send MinChar to the client
+ */
+app.get('/min-char', (req, res) => {
+    res.json({ MinChar });
+});
+
 
 /**
  * Route to handle saving content based on a token.
