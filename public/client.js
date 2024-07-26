@@ -2,36 +2,25 @@
 let editor, select, statsEl;
 let initEditor = true;
 const byId = (id) => document.getElementById(id);
-
+let MinChar;
 // Helper Functions
 /**
  * Displays the "Copy" bar and pre-selects the text to copy.
  * @param {string} dataToCopy - The data to be copied.
  */
 const showCopyBar = (dataToCopy) => {
-    byId('copy').classList.remove('hidden');
-    const linkInput = byId('copy-link');
-    linkInput.value = dataToCopy;
-    linkInput.focus();
-    linkInput.setSelectionRange(0, dataToCopy.length);
-};
-
-/**
- * Hides the "Copy" bar and optionally updates the copy button text.
- * @param {boolean} success - Whether the copy action was successful.
- */
-const hideCopyBar = (success) => {
-    const copyButton = byId('copy-btn');
     const copyBar = byId('copy');
-    if (!success) {
-        copyBar.classList.add('hidden');
-        return;
+    const copyLink = byId('copy-link');
+
+    if (copyBar && copyLink) {
+        copyBar.classList.remove('hidden');
+        copyLink.classList.remove('hidden');
+        copyLink.value = dataToCopy;
+        copyLink.focus();
+        copyLink.setSelectionRange(0, dataToCopy.length);
+    } else {
+        console.error('Copy bar or copy link element not found.');
     }
-    copyButton.innerText = 'Copied !';
-    setTimeout(() => {
-        copyBar.classList.add('hidden');
-        copyButton.innerText = 'Copy';
-    }, 800);
 };
 
 /**
@@ -60,6 +49,15 @@ const init = () => {
     initCode();
     initClipboard();
     initModals();
+    /**
+    * Fetches the min char.
+    */
+    fetch('/min-char')
+        .then(response => response.json())
+        .then(data => {
+            MinChar = data.MinChar;
+        })
+    .catch(error => console.warn('Error fetching MinChar:', error));
 };
 
 /**
@@ -87,8 +85,15 @@ const initCodeEditor = (readOnly = false, initialContent = '') => {
     
     editor.on('change', () => {
         statsEl.innerHTML = `Length: ${editor.getValue().length} | Lines: ${editor.lineCount()}`;
-        hideCopyBar();
     });
+};
+/**
+ * Lets' you quickly hot swap between read-only and writeable.
+ */
+const toggleReadOnly = () => {
+    const isReadOnly = editor.getOption('readOnly');
+    editor.setOption('readOnly', !isReadOnly);
+    document.body.classList.toggle('readonly', !isReadOnly);
 };
 
 /**
@@ -107,7 +112,7 @@ const initLangSelector = () => {
             const language = e.data || { mime: null, mode: null };
             editor.setOption('mode', language.mime);
             CodeMirror.autoLoadMode(editor, language.mode);
-            document.title = e.text && e.text !== 'Plain Text' ? `NoPaste - ${e.text} code snippet` : 'NoPaste';
+            document.title = e.text && e.text !== 'Plain Text' ? `OutOfPaste - ${e.text} code snippet` : 'OutOfPaste';
         },
     });
 
@@ -256,9 +261,13 @@ const shorten = (name) => {
 const generateLink = (method) => {
     const data = editor.getValue();
     const token = generateToken();
+    toggleReadOnly()
     if (data.trim() === "") {
         CustomErrorModal("Your paste can not be empty!")
-    } else {
+    } else if (data.trim().length < MinChar) {
+        CustomErrorModal(`Your paste should contain atleast ${MinChar} characters!`)
+    }
+    else {
         showCopyBar(`${window.location.origin}/read/${token}`);
         console.log("Attempting to save data to server...");
         const payload = {

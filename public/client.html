@@ -8,10 +8,10 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap-grid.min.css,npm/slim-select@1.27.1/dist/slimselect.min.css,npm/codemirror@5.65.5/lib/codemirror.min.css,npm/codemirror@5.65.5/addon/scroll/simplescrollbars.css,npm/codemirror@5.65.5/theme/dracula.min.css,npm/microtip@0.2.2/microtip.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Favicon and meta tags -->
     <link href="/assets/favicon.ico" rel="icon" type="image/x-icon">
-    <link rel="canonical" href="https://OutOfPaste.boris.sh/">
     <meta name="description" content="OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.">
     <meta property="og:title" content="OutOfPaste - Database-powered paste service">
     <meta property="og:description" content="OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.">
@@ -30,27 +30,32 @@
     </script>
 
     <!-- Copy section -->
-    <section id="copy" class="container-fluid hidden shadow-bottom hide-readonly">
+    <div id="copy" class="container-fluid hidden shadow-bottom">
         <div class="row my-1">
             <div class="col my-1">
-                <input type="text" value="copy me" id="copy-link" class="px-2" onclick="this.select()">
+                <input type="text" value="copy me" id="copy-link" class="px-2" onclick="this.setSelectionRange(0, this.value.length)" />
             </div>
             <div class="col-auto my-1">
-                <button class="clipboard py-1 px-2 mx-1" id="copy-btn" data-clipboard-target="#copy-link">Copy</button>
-                <button class="py-1 px-2 mx-1" onclick="hideCopyBar(false)">Cancel</button>
+                <button class="clipboard py-1 px-2 mx-1" id="copy-btn" data-clipboard-target="#copy-link" type="button">
+                    Copy
+                </button>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Controls section -->
     <section id="controls" class="container-fluid shadow-bottom hide-readonly">
         <div class="row align-items-center justify-content-end my-1">
             <div class="col-auto mb-1">
-                <h1 class="my-0"><span>[</span> OutOfPaste <span>]</span></h1>
+                <h1  id="top-text" class="my-0"><span>[</span> Out Of Paste <span>]</span></h1>
             </div>
             <div class="col-auto">
-                <a href="javascript:void(0)" class="mx-3" aria-label="Click to know more about OutOfPaste" data-microtip-position="bottom" role="tooltip" onclick="showInfo()">About</a>
-                <a href="https://github.com/bokub/OutOfPaste" rel="noopener" target="_blank" class="mx-3">Source</a>
+                <a href="javascript:void(0)" class="mx-3" aria-label="Click to know more about OutOfPaste" data-microtip-position="bottom" role="tooltip" onclick="showInfo()">
+                    <i class="fa fa-info-circle"></i> About
+                </a>
+                <a href="https://github.com/Noraxx1/OutOfPaste" rel="noopener" target="_blank" class="mx-3">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </div>
             <div class="col"></div>
             <div class="col-auto my-1">
@@ -66,8 +71,8 @@
             </div>
             <div class="col-auto">
                 <button class="py-1 px-2 mx-0 my-1" onclick="generateLink('url')">Generate link</button>
-                <button class="py-1 px-2 mx-1 my-1" onclick="generateLink('markdown')">Generate markdown</button>
-                <button class="py-1 px-2 mx-0 my-1" onclick="generateLink('iframe')">Embed</button>
+                <button class="py-1 px-2 mx-1 my-1" onclick="CustomErrorModal(`sorry i din't code this yet!! >.<`)">Generate markdown</button>
+                <button class="py-1 px-2 mx-0 my-1" onclick="CustomErrorModal(`sorry i din't code this yet!! >.<`)">Embed</button>
             </div>
         </div>
     </section>
@@ -98,7 +103,9 @@
                 <div class="modal-content shadow-bottom p-3 m-3">
                     <div class="modal-close" onclick="hideAboutModal()"><span class="icon-close"></span></div>
                     <h2>About OutOfPaste</h2>
-                    <p>OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.</p>
+                    <p>Out Of Paste is a self-hosted alternative to traditional pastebin services. Unlike NoPaste, which encodes pastes in the URL using base64, Out Of Paste saves content directly on the server. It features a modern web interface, an easy-to-configure setup, and advanced settings for those seeking greater customization.</p>
+                    <p>You can check more about Out Of Paste <a href="https://github.com/Noraxx1/OutOfPaste">here</a></p>
+
                 </div>
             </div>
         </div>
@@ -133,7 +140,20 @@
     
     <!-- Inline script -->
     <script>
+        //<!-- Basically when the stuff starts up. -->
         document.addEventListener('DOMContentLoaded', function() {
+            /**
+            * Fetchs the hoster name.
+            */ 
+            fetch('/hoster-name')
+            .then(response => response.json())
+            .then(data =>
+                document.getElementById('top-text').innerHTML = `<span>[</span> Out Of paste <span>]<small><small>(hosted by:${data.HosterName})</small></small>`
+                );
+            /**
+            * Url handling.
+            */ 
+
             var path = window.location.pathname;
             if (path.includes('read')) {
                 var pathParts = path.split('/');
