@@ -10,6 +10,10 @@ import LRU from 'lru-cache';
 const require = createRequire(import.meta.url);
 const config = require('./config.json');
 const { port, DataDirectory, adress, windowMs, MaximumRequests, RatelimitMessage, fileCreationCacheMax, fileCreationCacheMaxAge, HosterName, MinChar } = config;
+/**Prevents a very common issue.*/
+if (port < 1024) {
+	console.log("Warning: You are attempting to use a privileged port. If you encounter an error, please try running the command with elevated permissions (as root).")
+}
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
