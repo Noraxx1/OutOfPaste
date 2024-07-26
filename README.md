@@ -37,6 +37,7 @@ Out Of Paste is a self-hosted alternative to traditional pastebin services. Unli
 # Hosting
 > [!WARNING]  
 > It is not recommended to use Out Of Paste at this state since major improvements and features are coming.
+> 
 > Ports below 1024 are considered "privileged ports." To use these ports, you need to have root or administrative access. If you need to use a port in this range, just run your command with sudo to get the necessary permissions.
 
 #### (First, make sure to have npm installed.)
