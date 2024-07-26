@@ -42,5 +42,25 @@ Out Of Paste is a self-hosted alternative to traditional pastebin services. Unli
 To start Out Of Paste, just run `make deploy`.
 
 # Configuring
+
 > [!NOTE]  
-> This section has not been written yet!
+> those configuration go inside `config.json`.
+> optional means that you can leave the variable empity but **doesnt mean you can delete it**
+
+### Required Configurations.
+- `port`: this is the port of where nopaste should listen on,i reccomend using port `80` as it is the default port listened by dns.
+- `metod`: **(NOTE:affects `DataDirectory`)** this is the metod on how the pastes should be saved,you can choose only file for now.
+- `style`: this is the style of Nopaste right now the only current avaliable theme is `dracula`
+- `debug`: this boolean defines if advanced loggin should be made in console.
+- `MaximumRequests`: the maximum ammount of request you can send every `every`
+- `Every`: the time span wich you can do `MaximumRequests`
+- `fileCreationCacheMax`: I have no idea what this does ;-;.
+- `fileCreationCacheMaxAge`: Read `fileCreationCacheMax`
+- `MinChar`: the minimum size(in characters) that the paste should have to be allowed for save.
+
+## Semi-optional configurations.
+#### **(configurations affected by other configurations)**
+- `DataDirectory`: **(NOTE:affected by `metod`)** if you are using the `file` save metod this is were the file creation should happen,specify paths like: `path/to/folder` and make sure the folder exists in the same directory as Out Of Paste
+### Optional configurations.
+- `HosterName`: this is the name of the people who is hosting Out Of Paste,so instead of renaming the whole Out Of Paste to another name you can just easily credit yourself or your website.
+- `RateLimitMessage`: this is the message that gets printed in the **client console** after the user gets ratelimited.
