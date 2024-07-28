@@ -39,8 +39,16 @@ Out Of Paste is a self-hosted alternative to traditional pastebin services. Unli
 >  Are coming soon!
 
 # Hosting
-<img src="https://github.com/user-attachments/assets/3980b57d-396c-4976-960d-0445de1b5bb4" alt="Image" width="800" />
+> [!WARNING]  
+> It is not recommended to use Out Of Paste at this state since major improvements and features are coming.
+> Also: ports below 1024 are considered privileged ports,to use those you will need privileged acces(or admin).
+**Make sure to have (npm)[https://www.npmjs.com/] installed before proceeding**
 
+Just run:
+```nmp run deploy```
+Or if you want to run with debug:
+```nmp run debug```
+##### You can check what those script do inside of [package.json](package.json)
 # Configuring
 
 > [!NOTE]  
