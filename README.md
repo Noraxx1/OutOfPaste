@@ -42,12 +42,12 @@ Out Of Paste is a self-hosted alternative to traditional pastebin services. Unli
 > [!WARNING]  
 > It is not recommended to use Out Of Paste at this state since major improvements and features are coming.
 > Also: ports below 1024 are considered privileged ports,to use those you will need privileged acces(or admin).
-**Make sure to have (npm)[https://www.npmjs.com/] installed before proceeding**
+**Make sure to have (bun)[https://bun.sh/] installed before proceeding**
 
 Just run:
-```nmp run deploy```
+```bun run deploy```
 Or if you want to run with debug:
-```nmp run debug```
+
 ##### You can check what those script do inside of [package.json](package.json)
 # Configuring
 

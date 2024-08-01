@@ -1,14 +1,8 @@
 {
-  "name": "withpaste",
+  "name": "outofpaste",
   "version": "1.0.0",
-  "description": "A simple pastebin-like application.",
-  "main": "client.js",
   "module": "server.js",
   "type": "module",
-  "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Norax",
   "license": "MIT",
   "dependencies": {
@@ -36,9 +30,12 @@
     "websocket": "^1.0.29",
     "yargs": "^7.1.0"
   },
+  "scripts": {
+    "clean": "clear && rm -rf node_modules && rm -f package-lock.json && bun server.js",
+    "deploy": "clear && bun server.js"
+  },
   "devDependencies": {
     "@types/bun": "latest",
-    "typescript": "^5.0.0"
-  },
-  "keywords": []
+    "eslint": "^8.0.0"
+  }
 }

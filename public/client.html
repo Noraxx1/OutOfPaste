@@ -14,9 +14,7 @@
     <link href="/assets/favicon.ico" rel="icon" type="image/x-icon">
     <meta name="description" content="OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.">
     <meta property="og:title" content="OutOfPaste - Database-powered paste service">
-    <meta property="og:description" content="OutOfPaste is a paste service which uses a database and saves content in text files with a token identification system.">
-    <meta property="og:image" content="https://cdn.jsdelivr.net/gh/bokub/OutOfPaste@images/logo.png">
-    <meta property="og:url" content="https://OutOfPaste.boris.sh/">
+
     <meta property="og:type" content="website">
 </head>
 <body class="m-0">
@@ -29,8 +27,8 @@
         }
     </script>
 
-    <!-- Copy section -->
-    <div id="copy" class="container-fluid hidden shadow-bottom">
+
+   <div id="copy" class="container-fluid hidden shadow-bottom">
         <div class="row my-1">
             <div class="col my-1">
                 <input type="text" value="copy me" id="copy-link" class="px-2" onclick="this.setSelectionRange(0, this.value.length)" />
@@ -42,7 +40,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Controls section -->
     <section id="controls" class="container-fluid shadow-bottom hide-readonly">
         <div class="row align-items-center justify-content-end my-1">
@@ -70,9 +68,7 @@
                 </button>
             </div>
             <div class="col-auto">
-                <button class="py-1 px-2 mx-0 my-1" onclick="generateLink('url')">Generate link</button>
-                <button class="py-1 px-2 mx-1 my-1" onclick="CustomErrorModal(`sorry i din't code this yet!! >.<`)">Generate markdown</button>
-                <button class="py-1 px-2 mx-0 my-1" onclick="CustomErrorModal(`sorry i din't code this yet!! >.<`)">Embed</button>
+                <button class="py-1 px-2 mx-0 my-1" onclick="generateLink('url')">Save</button>
             </div>
         </div>
     </section>
@@ -81,15 +77,16 @@
     <div id="progress"></div>
     <div id="editor"></div>
 
+ 
     <!-- Footer section -->
     <footer id="footer" class="shadow-top container-fluid">
         <div class="row my-1">
             <div class="col mono hide-readonly" id="stats">Length: 0 | Lines: 1</div>
             <div class="col mono show-readonly">Powered by OutOfPaste</div>
             <div class="col-auto mono show-readonly">
-                <a href="javascript:void(0)" onclick="openInNewTab()">
-                    <span class="icon-edit"></span>
-                    Edit
+                <a href="javascript:void(0)" onclick="fork()">
+                    <span class="icon-fork"></span>
+                    Fork
                 </a>
             </div>
         </div>
@@ -109,57 +106,36 @@
                 </div>
             </div>
         </div>
-        <!-- Error modal -->
-        <div id="error-modal" class="modal" hidden>
+        <!-- error modal -->
+        <div id="error-modal" class="modal" style="display: none;">
             <div tabindex="-1" class="modal-overlay">
                 <div class="modal-content shadow-bottom p-3 m-3">
-                    <a href="javascript:void(0);" class="modal-close" onclick="this.href = window.location.protocol + '//' + window.location.host;">
+                    <a href="javascript:void(0);" id="error-modal-close" class="error-modal-close">
                         <span class="icon-close"></span>
                     </a>
                     <h2>Error</h2>
-                    <p>Oops! It seems that the paste you are trying to open doesn't exist!<br><br>
-                    Make sure the URL is correct and that your paste has not been auto-deleted!</p>
+                    <p id="error-message"><!-- Placeholder for error content --></p>
                 </div>
             </div>
-        </div>
-        <!-- Save error modal -->
-    <div id="save-error-modal" class="modal" hidden>
-        <div tabindex="-1" class="modal-overlay">
-            <div class="modal-content shadow-bottom p-3 m-3">
-                <a href="javascript:void(0);" class="modal-close" onclick="this.href = window.location.protocol + '//' + window.location.host;">
-                    <span class="icon-close"></span>
-                </a>
-                <h2>Error</h2>
-                <p id="error-message">"<!-- Placeholder for error content -->"<br><br></p>
-            </div>
-        </div>
     </div>
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/combine/npm/lzma@2.3.2/src/lzma.min.js,npm/slim-select@1.27.1/dist/slimselect.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/micromodal@0.4.10/dist/micromodal.min.js,npm/codemirror@5.65.5,npm/codemirror@5.65.5/addon/mode/loadmode.min.js,npm/codemirror@5.65.5/addon/mode/overlay.min.js,npm/codemirror@5.65.5/addon/mode/multiplex.min.js,npm/codemirror@5.65.5/addon/mode/simple.min.js,npm/codemirror@5.65.5/addon/scroll/simplescrollbars.js,npm/codemirror@5.65.5/mode/meta.min.js"></script>
     <script src="/client.js" defer></script>
-    
+
     <!-- Inline script -->
     <script>
         //<!-- Basically when the stuff starts up. -->
         document.addEventListener('DOMContentLoaded', function() {
             /**
-            * Fetchs the hoster name.
-            */ 
-            fetch('/hoster-name')
-            .then(response => response.json())
-            .then(data =>
-                document.getElementById('top-text').innerHTML = `<span>[</span> Out Of paste <span>]<small><small>(hosted by:${data.HosterName})</small></small>`
-                );
-            /**
             * Url handling.
             */ 
-
+            
             var path = window.location.pathname;
             if (path.includes('read')) {
                 var pathParts = path.split('/');
                 var token = pathParts[pathParts.length - 1];
                 if (token === "") {
-                    showError();
+                    OpenErrorModal("<p>Oops! It seems that the paste you are trying to open doesn't exist!<br><br>\nMake sure the URL is correct and that your paste has not been auto-deleted!</p>",true);
                 } else {
                     fetch(`${window.location.origin}/content/${token}`, {
                         method: 'GET',
@@ -177,13 +153,13 @@
                         if (data.content) {
                             initCodeEditor(true, data.content);
                         } else {
-                            showError();
+                            OpenErrorModal("<p>Oops! It seems that the paste you are trying to open doesn't exist!<br><br>\nMake sure the URL is correct and that your paste has not been auto-deleted!</p>", true);
                             console.log("error?");
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showError();
+                        OpenErrorModal("<p>Oops! It seems that the paste you are trying to open doesn't exist!<br><br>\nMake sure the URL is correct and that your paste has not been auto-deleted!</p>", true);
                     });
                 }
             } else {

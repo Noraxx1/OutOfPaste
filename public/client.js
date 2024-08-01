@@ -2,7 +2,7 @@
 let editor, select, statsEl;
 let initEditor = true;
 const byId = (id) => document.getElementById(id);
-let MinChar;
+let MinChar, MaxChar, HosterName;
 // Helper Functions
 /**
  * Displays the "Copy" bar and pre-selects the text to copy.
@@ -11,8 +11,10 @@ let MinChar;
 const showCopyBar = (dataToCopy) => {
     const copyBar = byId('copy');
     const copyLink = byId('copy-link');
+    const controls = byId('controls')
 
     if (copyBar && copyLink) {
+        controls.remove();
         copyBar.classList.remove('hidden');
         copyLink.classList.remove('hidden');
         copyLink.value = dataToCopy;
@@ -50,15 +52,25 @@ const init = () => {
     initClipboard();
     initModals();
     /**
-    * Fetches the min char.
+    * Fetches the settings payload char.
     */
-    fetch('/min-char')
+    fetch('/SettingsPayload')
         .then(response => response.json())
         .then(data => {
             MinChar = data.MinChar;
+            MaxChar = data.MaxChar;
+            HosterName = data.HosterName;
         })
-    .catch(error => console.warn('Error fetching MinChar:', error));
+        .then (data => {
+            if (HosterName.trim() !== "") {
+                document.getElementById('top-text').innerHTML = `<span>[</span> Out Of paste <span>]<small><small>(hosted by:${HosterName})</small></small>`
+            };
+        })
+    .catch(error => console.warn('Error fetching settings:', error));
+
+    
 };
+
 
 /**
  * Sets up the CodeMirror editor with optional read-only mode and initial content.
@@ -82,8 +94,9 @@ const initCodeEditor = (readOnly = false, initialContent = '') => {
     }
 
     statsEl = byId('stats');
-    
+    editor.setSize('100%','100%')
     editor.on('change', () => {
+        editor.setSize('100%','100%')
         statsEl.innerHTML = `Length: ${editor.getValue().length} | Lines: ${editor.lineCount()}`;
     });
 };
@@ -135,9 +148,6 @@ const initCode = () => {
  */
 const initClipboard = () => {
     const clipboard = new ClipboardJS('.clipboard');
-    clipboard.on('success', () => {
-        hideCopyBar(true);
-    });
 };
 
 /**
@@ -170,24 +180,28 @@ const hideAboutModal = () => {
 };
 
 /**
- * Displays the "error" modal.
+ * Generates a link based on the specified method and sends data to the server.
+ * @param {string} err - The error displayed on the modal, html is supported.
+ * @param {boolean} refresh - When closed should the modal redirect you to homepage? 
  */
-const showError = () => {
+const OpenErrorModal = (err, refresh = false) => {
+    document.getElementById('error-message').innerHTML = err;
     const modal = document.getElementById('error-modal');
+    if (refresh) {
+        document.getElementById('error-modal-close').onclick = () => {
+            window.location.href = window.location.protocol + '//' + window.location.host;
+        };
+    } else {
+        document.getElementById('error-modal-close').onclick = () => {
+            modal.style.display = '';
+            setTimeout(() => {
+                modal.style.opacity = '0';
+            }, 10);
+        }}
     modal.style.display = 'block';
     setTimeout(() => {
         modal.style.opacity = '1';
     }, 10);
-};
-
-const CustomErrorModal = (err) => {
-    document.getElementById('error-message').innerHTML = `<br>${err}<br>`;
-    const modal = document.getElementById('save-error-modal');
-    modal.style.display = 'block';
-    setTimeout(() => {
-        modal.style.opacity = '1';
-    }, 10);
-  
 };
 
 /**
@@ -261,13 +275,16 @@ const shorten = (name) => {
 const generateLink = (method) => {
     const data = editor.getValue();
     const token = generateToken();
-    toggleReadOnly()
+    
     if (data.trim() === "") {
-        CustomErrorModal("Your paste can not be empty!")
+        OpenErrorModal("Your paste can not be empty,or contain only spaces!")
     } else if (data.trim().length < MinChar) {
-        CustomErrorModal(`Your paste should contain atleast ${MinChar} characters!`)
+        OpenErrorModal(`Your paste should contain atleast ${MinChar} characters!`)
+    } else if (data.length > MaxChar) {
+        OpenErrorModal(`You exceeded the maximum paste size of ${MaxChar} characters!`)
     }
     else {
+        
         showCopyBar(`${window.location.origin}/read/${token}`);
         console.log("Attempting to save data to server...");
         const payload = {
@@ -293,6 +310,5 @@ const generateLink = (method) => {
       }
 
 };
-
 
 document.addEventListener('DOMContentLoaded', init);
