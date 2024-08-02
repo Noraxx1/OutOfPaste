@@ -50,7 +50,5 @@ Or if you want to run with debug:
 
 ##### You can check what those script do inside of [package.json](package.json)
 # Configuring
-
-> [!NOTE]  
-> this page has been moved to the wiki.
+Check out: [configuring wiki page](https://github.com/Noraxx1/OutOfPaste/wiki/Configuring)
 
