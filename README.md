@@ -13,7 +13,7 @@
 ```
 
 > [!NOTE]  
-> Out Of Paste started out as a fork of [NoPaste](<https://github.com/bokub/nopaste>) but got heavily edited.
+> Out Of Paste started as a fork of [NoPaste](https://github.com/bokub/nopaste) but has been heavily edited.
 
 ____
 
@@ -21,34 +21,32 @@ ____
 Out Of Paste is a self-hosted alternative to traditional pastebin services. Unlike NoPaste, which encodes pastes in the URL using base64, Out Of Paste stores content directly server-side. It features a modern web interface, an easy-to-configure setup, and advanced settings for those seeking greater customization.
 
 ## Features
-- Rate limit to prevent users from creating too many files.
-- Modern UI (the UI is mostly based on the NoPaste UI!)
-- Rate limit configuration.
-- Easy set-up and depoly.
-
+- Rate limiting to prevent users from creating too many files.
+- Modern UI (the UI is mostly based on the NoPaste UI!).
+- Configurable rate limits.
+- Easy setup and deployment.
+- Database support
 > [!NOTE]  
 > Features such as:
-> - Database support(right now you can only save pastes in to text files),
-> - Encryption supportx
+> - Encryption support,
 > - Raw mode,
 > - Fork and edit pastes,
-> - Markdown,
-> - Mobile css fix,
+> - Markdown support,
+> - Mobile CSS fixes,
 > - Themes,
-> 
->  Are coming soon!
+>
+> are coming soon!
 
 # Hosting
 > [!WARNING]  
-> It is not recommended to use Out Of Paste at this state since major improvements and features are coming.
-> Also: ports below 1024 are considered privileged ports,to use those you will need privileged acces(or admin).
-**Make sure to have (bun)[https://bun.sh/] installed before proceeding**
+> It is not recommended to use Out Of Paste in its current state as major improvements and features are forthcoming.
+**Ensure you have [bun](https://bun.sh/) installed before proceeding**
 
-Just run:
-```bun run deploy```
-Or if you want to run with debug:
+To deploy, just run:
+```bash
+bun run deploy
+```
 
-##### You can check what those script do inside of [package.json](package.json)
+##### You can check what these scripts do inside the [package.json](package.json)
 # Configuring
-Check out: [configuring wiki page](https://github.com/Noraxx1/OutOfPaste/wiki/Configuring)
-
+Check out the [configuring wiki page](https://github.com/Noraxx1/OutOfPaste/wiki/Configuring)
